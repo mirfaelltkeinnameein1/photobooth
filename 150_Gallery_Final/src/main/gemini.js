@@ -212,7 +212,7 @@ async function callGeminiGenerate({
         }
       },
       {
-        text: `${promptText}\n\nImage A is the slot template background. Image B is the selfie. Output exactly one edited final background image only.`
+        text: `${promptText}\n\nIMAGE 1 is the slot template background. IMAGE 2 is the selfie. Output exactly one edited final background image only.`
       }
     ];
   } else {
@@ -230,7 +230,7 @@ async function callGeminiGenerate({
         }
       },
       {
-        text: `${promptText}\n\nImage A is the slot template background. Image B is the selfie. Output exactly one edited final background image only.`
+        text: `${promptText}\n\nIMAGE 1 is the slot template background. IMAGE 2 is the selfie. Output exactly one edited final background image only.`
       }
     ];
   }

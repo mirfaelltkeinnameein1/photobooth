@@ -1,1 +1,13 @@
-Replace the hologram on the couch with the person from the selfie. Make sure the lighting, style and pose of the original photo of the guy on the couch are maintained but do replace the person including their gender and skin color if necessary with the one from the selfie. The clothing should also be appropriate and match the style and gender of the person from the selfie. The person must look like the hologram and still have the legs faded away.
+You get two images. IMAGE 1 is the scene. IMAGE 2 is a selfie of the person(s) to insert. Return IMAGE 1 edited, same size and framing.
+
+Scene: a bright modern living room with a city skyline behind large windows.
+
+Task: replace the glowing hologram man sitting on the couch with the main person from IMAGE 2. Keep his exact sitting pose and position, the holographic glow, and the legs fading out to transparent.
+
+Identity: the inserted person must clearly be the person from IMAGE 2. Keep their face, facial features, age, gender, skin tone, hair colour and hairstyle (hairstyle may only be adapted to the era if the scene is historical). Never take face, gender or skin tone from the original person. Only clothing and lighting are adapted to the scene.
+
+Style: match same translucent hologram look as the original; dress the person to fit the scene and to suit their gender.
+
+People count: the main person is the one closest to the centre / largest in IMAGE 2. If IMAGE 2 shows only one person, do not add anyone else. If IMAGE 2 shows more people, place each of the others sitting next to the main person on the couch as further holograms in the same style, legs also fading out; head, face and upper body must be solid and fully visible. Each added person keeps their own face, gender and skin tone. No heads or faces cropped, no overlapping the main person.
+
+Everything else in IMAGE 1 must stay pixel-identical: background, objects, furniture, text, other people, camera angle.

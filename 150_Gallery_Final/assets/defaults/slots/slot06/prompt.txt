@@ -1,1 +1,13 @@
-Edit the photo so the tourist with the camera on the left is replaced by the person in the selfie. Make sure the lighting, style and pose of the original photo of the tourist with the camera are maintained but do replace the person including their gender and skin color if necessary with the one from the selfie. The clothing should also be appropriate and match the style and gender of the person from the selfie.
+You get two images. IMAGE 1 is the scene. IMAGE 2 is a selfie of the person(s) to insert. Return IMAGE 1 edited, same size and framing.
+
+Scene: a colourful bazaar alley with hanging lamps and spice stalls.
+
+Task: replace the tourist with the camera standing left of centre (NOT the woman on the right) with the main person from IMAGE 2. Keep his exact pose, position, size and the camera in his hands.
+
+Identity: the inserted person must clearly be the person from IMAGE 2. Keep their face, facial features, age, gender, skin tone, hair colour and hairstyle (hairstyle may only be adapted to the era if the scene is historical). Never take face, gender or skin tone from the original person. Only clothing and lighting are adapted to the scene.
+
+Style: match warm bazaar lighting of the original; dress the person to fit the scene and to suit their gender.
+
+People count: the main person is the one closest to the centre / largest in IMAGE 2. If IMAGE 2 shows only one person, do not add anyone else. If IMAGE 2 shows more people, place each of the others as fellow tourists near the main person (taking a photo, pointing, looking at a map). Each added person keeps their own face, gender and skin tone. No heads or faces cropped, no overlapping the main person.
+
+Everything else in IMAGE 1 must stay pixel-identical: background, objects, furniture, text, other people, camera angle.

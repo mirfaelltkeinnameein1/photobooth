@@ -1,1 +1,1 @@
-Keep the exact aspect ratio, framing and composition of Image A (the slot template).
+Keep the exact aspect ratio, framing and composition of IMAGE 1 (the slot template).
