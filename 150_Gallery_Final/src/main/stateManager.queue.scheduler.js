@@ -99,6 +99,8 @@ function installStateManagerQueueSchedulerMethods(StateManager) {
     }
 
     this.jobs.set(uuid, job);
+    // A replacement job starts fresh, even if the old one was parked after failures.
+    this.autoGenerationPaused.delete(uuid);
     await saveJob(job);
     await this.enforceJobCapacity(12, [uuid]);
 
@@ -143,7 +145,9 @@ function installStateManagerQueueSchedulerMethods(StateManager) {
     try {
       while (true) {
         if (!this.config?.automation?.auto_api_enabled) break;
-        const nextJob = this.getJobsSorted().find((job) => this.jobNeedsInitialGeneration(job));
+        const nextJob = this.getJobsSorted().find(
+          (job) => !this.autoGenerationPaused.has(job.uuid) && this.jobNeedsInitialGeneration(job)
+        );
         if (!nextJob) break;
         const { halted } = await this.runInitialGenerationForJob(nextJob.uuid);
         if (halted) break;

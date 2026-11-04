@@ -93,7 +93,7 @@
       const ffmpegMissing = !tools.ffmpeg || !tools.ffprobe;
       els.toolWarning.classList.toggle("hidden", !ffmpegMissing);
       if (ffmpegMissing) {
-        els.toolWarning.textContent = "Warning: ffmpeg/ffprobe not found in PATH. Image conversion/probing and MP4 export may fail.";
+        els.toolWarning.textContent = "Warning: ffmpeg/ffprobe not found in PATH. Image conversion/probing and image export may fail.";
       }
 
       if (els.autoApiToggle) els.autoApiToggle.checked = automation.auto_api_enabled !== false;

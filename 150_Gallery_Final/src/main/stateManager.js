@@ -52,6 +52,9 @@ class StateManager extends EventEmitter {
     this.processing = false;
     this.activeJobId = null;
     this.jobLocks = new Set();
+    // Jobs whose auto generation failed; processQueue skips them until a manual retry.
+    // In-memory on purpose: a restart gives every parked job one fresh attempt.
+    this.autoGenerationPaused = new Set();
     this.missingWarned = new Set();
 
     this.logger.on("log", (entry) => {

@@ -44,8 +44,8 @@
               <span class="font-semibold">${slotObj.slot}</span>
               <span class="${activeBadge}">${slotObj.active ? "ACTIVE" : "INACTIVE"}</span>
             </div>
-            <div class="relative aspect-square w-full overflow-hidden rounded border border-slate-700">
-              <img src="${bgUrl}" class="absolute inset-0 h-full w-full object-cover" />
+            <div class="relative aspect-square w-full overflow-hidden rounded border border-slate-700 bg-slate-900">
+              <img src="${bgUrl}" class="absolute inset-0 h-full w-full object-contain" />
             </div>
             <div class="mt-2 flex items-center justify-between gap-2 text-xs">
               <label class="text-slate-300">Active</label>

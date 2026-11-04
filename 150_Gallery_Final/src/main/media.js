@@ -70,27 +70,6 @@ async function checkMediaTooling() {
   return { ffmpeg, ffprobe };
 }
 
-async function probeVideoResolution(filePath) {
-  const args = [
-    "-v",
-    "error",
-    "-select_streams",
-    "v:0",
-    "-show_entries",
-    "stream=width,height",
-    "-of",
-    "json",
-    filePath
-  ];
-  const { stdout } = await runProcess(resolveMediaBinary("ffprobe"), args);
-  const parsed = JSON.parse(stdout);
-  const stream = parsed.streams && parsed.streams[0];
-  if (!stream || !stream.width || !stream.height) {
-    throw new Error(`No video resolution from ffprobe for ${filePath}`);
-  }
-  return { width: Number(stream.width), height: Number(stream.height) };
-}
-
 async function probeImageResolution(filePath) {
   const args = [
     "-v",
@@ -160,14 +139,14 @@ async function generateCompositeImage({
 
   // Static composite: background -> optional static overlay. No animation layer.
   // Target size comes from the background's native resolution (resolved by caller),
-  // so backgrounds of ANY resolution/aspect ratio work. The overlay is cover-fitted
-  // onto that size so it is never stretched.
+  // so backgrounds of ANY resolution/aspect ratio work.
+  // The overlay (logo in its bottom-right corner) is fitted inside the target without
+  // cropping and anchored bottom-right, so the logo survives non-square backgrounds.
   const useOverlay = !!overlayPath;
   const filter = useOverlay
     ? `[0:v]scale=${width}:${height}:flags=lanczos,format=rgba[bg];` +
-      `[1:v]scale=${width}:${height}:force_original_aspect_ratio=increase:flags=lanczos,` +
-      `crop=${width}:${height},format=rgba[ov];` +
-      `[bg][ov]overlay=0:0:format=auto[v]`
+      `[1:v]scale=${width}:${height}:force_original_aspect_ratio=decrease:flags=lanczos,format=rgba[ov];` +
+      `[bg][ov]overlay=main_w-overlay_w:main_h-overlay_h:format=auto[v]`
     : `[0:v]scale=${width}:${height}:flags=lanczos,format=rgba[v]`;
 
   const args = ["-y", "-i", backgroundPath];
@@ -193,7 +172,6 @@ async function generateCompositeImage({
 module.exports = {
   runProcess,
   checkMediaTooling,
-  probeVideoResolution,
   probeImageResolution,
   normalizeImageToPng,
   generateCompositeImage

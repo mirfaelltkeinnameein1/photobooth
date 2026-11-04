@@ -1,0 +1,23 @@
+# npm
+node_modules/
+npm-debug.log*
+.npm-cache/
+
+# Electron packaging output (ffmpeg/ffprobe in build/bin are ~200 MB each)
+150_Gallery_Final/dist/
+150_Gallery_Final/build/bin/
+150_Gallery_Final/.electron-cache/
+
+# Runtime data the app writes in dev mode (selfies, jobs, logs, exports)
+150_Gallery_Final/runtime/
+150_Gallery_Final/gallery-composer-data/
+
+# Leftovers from atomic writes
+*.tmp
+
+# Secrets / local env
+.env
+
+# OS
+Thumbs.db
+Desktop.ini

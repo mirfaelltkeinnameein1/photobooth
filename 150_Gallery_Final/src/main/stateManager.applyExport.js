@@ -262,6 +262,7 @@ function installStateManagerApplyExportMethods(StateManager) {
 
     this.stopManualWatcher(uuid);
     this.jobs.delete(uuid);
+    this.autoGenerationPaused.delete(uuid);
 
     try {
       await fs.promises.unlink(jobFile);

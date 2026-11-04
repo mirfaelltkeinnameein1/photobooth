@@ -7,6 +7,28 @@ const { sanitizeFilePart } = require("./fsutils");
 const INLINE_PAYLOAD_LIMIT_BYTES = 20 * 1024 * 1024;
 const INLINE_SAFE_RAW_BYTES = 14 * 1024 * 1024;
 
+// Output aspect ratios accepted by both image models (generationConfig.imageConfig.aspectRatio).
+const SUPPORTED_ASPECT_RATIOS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"];
+
+function closestAspectRatio(width, height) {
+  const w = Number(width);
+  const h = Number(height);
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
+  // Compare in log space so 2:1 vs 1:2 count as equally far from 1:1.
+  const target = Math.log(w / h);
+  let best = null;
+  let bestDiff = Infinity;
+  for (const ratio of SUPPORTED_ASPECT_RATIOS) {
+    const [rw, rh] = ratio.split(":").map(Number);
+    const diff = Math.abs(Math.log(rw / rh) - target);
+    if (diff < bestDiff) {
+      best = ratio;
+      bestDiff = diff;
+    }
+  }
+  return best;
+}
+
 function extFromMime(mime) {
   if (!mime) return null;
   const lookup = {
@@ -135,6 +157,7 @@ async function callGeminiGenerate({
   promptText,
   templatePath,
   selfiePath,
+  aspectRatio = null,
   timeoutMs = 60000
 }) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
@@ -153,7 +176,8 @@ async function callGeminiGenerate({
     template_size_bytes: templateBytes.length,
     selfie_mime: selfieMime,
     selfie_size_bytes: selfieBytes.length,
-    approx_inline_payload_bytes: approxInlinePayloadBytes
+    approx_inline_payload_bytes: approxInlinePayloadBytes,
+    aspect_ratio: aspectRatio
   };
 
   let parts;
@@ -218,7 +242,9 @@ async function callGeminiGenerate({
       }
     ],
     generationConfig: {
-      responseModalities: ["IMAGE"]
+      responseModalities: ["IMAGE"],
+      // Pin output to the template's shape; unset, the model may follow the selfie's aspect ratio.
+      ...(aspectRatio ? { imageConfig: { aspectRatio } } : {})
     }
   };
 
@@ -298,6 +324,7 @@ async function generateWithRetry({
   promptText,
   templatePath,
   selfiePath,
+  aspectRatio = null,
   outputDir,
   outputPrefix,
   logger,
@@ -334,7 +361,8 @@ async function generateWithRetry({
           model,
           promptText,
           templatePath,
-          selfiePath
+          selfiePath,
+          aspectRatio
         });
 
         const filename = `${sanitizeFilePart(outputPrefix)}_${sanitizeFilePart(model)}_a${attempt}.${result.ext}`;
@@ -391,5 +419,6 @@ async function generateWithRetry({
 
 module.exports = {
   generateWithRetry,
-  detectMimeFromMagic
+  detectMimeFromMagic,
+  closestAspectRatio
 };

@@ -16,10 +16,10 @@
           const g1Rel = g1 ? g1.replace(base + "\\", "").replace(/\\/g, "/") : "";
           const g2Rel = g2 ? g2.replace(base + "\\", "").replace(/\\/g, "/") : "";
           const g1Preview = g1Rel
-            ? `<div class="aspect-square w-full overflow-hidden rounded border border-slate-700"><img src="${relToFileUrl(g1Rel)}" class="h-full w-full object-cover" /></div>`
+            ? `<div class="aspect-square w-full overflow-hidden rounded border border-slate-700 bg-slate-900"><img src="${relToFileUrl(g1Rel)}" class="h-full w-full object-contain" /></div>`
             : `<div class="aspect-square w-full rounded border border-slate-700 bg-slate-900 p-2 text-[11px] text-slate-500">No G1 image</div>`;
           const g2Preview = g2Rel
-            ? `<div class="aspect-square w-full overflow-hidden rounded border border-slate-700"><img src="${relToFileUrl(g2Rel)}" class="h-full w-full object-cover" /></div>`
+            ? `<div class="aspect-square w-full overflow-hidden rounded border border-slate-700 bg-slate-900"><img src="${relToFileUrl(g2Rel)}" class="h-full w-full object-contain" /></div>`
             : `<div class="aspect-square w-full rounded border border-slate-700 bg-slate-900 p-2 text-[11px] text-slate-500">No G2 image</div>`;
           return `<div class="rounded border border-slate-700 bg-slate-800 p-2 text-xs">
             <div class="font-semibold">${item.uuid}</div>

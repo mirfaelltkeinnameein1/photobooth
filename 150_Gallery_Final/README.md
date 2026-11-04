@@ -5,7 +5,12 @@ Electron gallery app for live-events with:
 - Gallery 1 window
 - Gallery 2 window
 
-It watches an incoming selfie folder, generates background replacements with Nano Banana (pro or standard), lets operators review/accept, and exports final MP4 composites.
+It watches an incoming selfie folder, generates background replacements with Nano Banana (pro or standard), lets operators review/accept, and exports final static PNG composites (`<uuid>/<uuid>_1.png`, `<uuid>/<uuid>_2.png`: accepted background + logo overlay).
+
+Slot templates (`assets/defaults/slots/slotXX/background.png`) may have any size/aspect ratio:
+- Gemini is asked for the template's aspect ratio (nearest supported value).
+- Gallery windows fit each image into its layout box without cropping or stretching.
+- Export keeps the image's native resolution; the overlay logo stays bottom-right.
 
 ## Stack
 - Electron + Express (localhost only)

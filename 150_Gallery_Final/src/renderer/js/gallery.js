@@ -105,12 +105,29 @@ function applyMenuVisibilityForMode() {
   }
 }
 
-function normalizeSquare(layoutSlot) {
-  const side = Math.max(60, Math.min(Number(layoutSlot.width || 300), Number(layoutSlot.height || 300)));
+function normalizeBox(layoutSlot) {
+  // Slots are free-form boxes; images of any aspect ratio are fitted inside (see fitBoxToImage).
   return {
     ...layoutSlot,
-    width: side,
-    height: side
+    width: Math.max(60, Number(layoutSlot.width || 300)),
+    height: Math.max(60, Number(layoutSlot.height || 300))
+  };
+}
+
+function fitBoxToImage(box, img) {
+  // Shrink the layout box to the image's aspect ratio (centered) so nothing is cropped
+  // and the slot frame hugs the picture. Size is unknown until the image has loaded.
+  const nw = img.naturalWidth;
+  const nh = img.naturalHeight;
+  if (!nw || !nh) return box;
+  const scale = Math.min(box.width / nw, box.height / nh);
+  const width = nw * scale;
+  const height = nh * scale;
+  return {
+    x: box.x + (box.width - width) / 2,
+    y: box.y + (box.height - height) / 2,
+    width,
+    height
   };
 }
 
@@ -130,7 +147,7 @@ function ensureSlotLayoutRef(slotId) {
     state.layout.slots.push(found);
   }
 
-  const normalized = normalizeSquare(found);
+  const normalized = normalizeBox(found);
   found.x = Number(normalized.x || 0);
   found.y = Number(normalized.y || 0);
   found.width = Number(normalized.width || 300);
@@ -143,14 +160,10 @@ function ensureSlotLayoutRef(slotId) {
 function updateLayoutFromElement(el) {
   const slot = el.dataset.slot;
   const layoutSlot = ensureSlotLayoutRef(slot);
-  const side = Math.max(
-    60,
-    Math.min(Number(el.style.width.replace("px", "")), Number(el.style.height.replace("px", "")))
-  );
   layoutSlot.x = Number(el.style.left.replace("px", ""));
   layoutSlot.y = Number(el.style.top.replace("px", ""));
-  layoutSlot.width = side;
-  layoutSlot.height = side;
+  layoutSlot.width = Math.max(60, Number(el.style.width.replace("px", "")));
+  layoutSlot.height = Math.max(60, Number(el.style.height.replace("px", "")));
 }
 
 function setupDragHandlers(el, handle) {
@@ -177,10 +190,8 @@ function setupDragHandlers(el, handle) {
       el,
       startX: ev.clientX,
       startY: ev.clientY,
-      startSize: Math.max(
-        Number(el.style.width.replace("px", "")),
-        Number(el.style.height.replace("px", ""))
-      )
+      startWidth: Number(el.style.width.replace("px", "")),
+      startHeight: Number(el.style.height.replace("px", ""))
     };
     el.classList.add("dragging");
     el.setPointerCapture(ev.pointerId);
@@ -197,10 +208,16 @@ function setupDragHandlers(el, handle) {
     } else {
       const dx = ev.clientX - state.drag.startX;
       const dy = ev.clientY - state.drag.startY;
-      const delta = Math.max(dx, dy);
-      const side = Math.max(60, state.drag.startSize + delta);
-      el.style.width = `${side}px`;
-      el.style.height = `${side}px`;
+      let width = Math.max(60, state.drag.startWidth + dx);
+      let height = Math.max(60, state.drag.startHeight + dy);
+      if (ev.shiftKey) {
+        // Shift keeps the box proportions (e.g. to stay square).
+        const scale = Math.max(width / state.drag.startWidth, height / state.drag.startHeight);
+        width = Math.max(60, state.drag.startWidth * scale);
+        height = Math.max(60, state.drag.startHeight * scale);
+      }
+      el.style.width = `${width}px`;
+      el.style.height = `${height}px`;
     }
   };
 
@@ -224,6 +241,8 @@ function ensureSlotElement(slotObj) {
   const bg = document.createElement("img");
   bg.className = "layer";
   bg.alt = `${slotId} bg`;
+  // Re-fit the slot once the real image size is known (first load and every swap).
+  bg.addEventListener("load", () => render());
 
   const label = document.createElement("div");
   label.textContent = slotId;
@@ -273,10 +292,14 @@ function syncSlotElement(slotObj) {
   const refs = ensureSlotElement(slotObj);
   const l = ensureSlotLayoutRef(slotObj.slot);
 
-  refs.container.style.left = `${l.x}px`;
-  refs.container.style.top = `${l.y}px`;
-  refs.container.style.width = `${l.width}px`;
-  refs.container.style.height = `${l.height}px`;
+  // Edit mode shows the full layout box so drag/resize work on the stored values;
+  // locked mode shrinks it to the image's shape.
+  const box = { x: l.x, y: l.y, width: l.width, height: l.height };
+  const rect = state.editMode ? box : fitBoxToImage(box, refs.bg);
+  refs.container.style.left = `${rect.x}px`;
+  refs.container.style.top = `${rect.y}px`;
+  refs.container.style.width = `${rect.width}px`;
+  refs.container.style.height = `${rect.height}px`;
   refs.container.style.zIndex = String(l.z || 1);
   refs.container.style.transformOrigin = "center center";
   refs.container.style.transform = `rotate(${normalizeRightAngle(l.rotation || 0)}deg)`;
@@ -325,9 +348,9 @@ function render() {
 }
 
 async function saveLayout() {
-  // Always store square slots + 90deg steps so gallery and export stay predictable.
+  // Store sane box sizes + 90deg steps so the gallery stays predictable.
   state.layout.slots = (state.layout.slots || []).map((slot) => ({
-    ...normalizeSquare(slot),
+    ...normalizeBox(slot),
     rotation: normalizeRightAngle(slot.rotation || 0)
   }));
   await api(`/api/layout/${gallery}`, "POST", state.layout);

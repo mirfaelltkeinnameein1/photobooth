@@ -72,7 +72,8 @@ function installStateManagerSnapshotMethods(StateManager) {
       ...job,
       selfie_preview_url: selfieExists ? `/api/jobs/${encodeURIComponent(job.uuid)}/selfie` : "",
       selfie_exists: selfieExists,
-      selfie_mtime_ms: selfieMtimeMs
+      selfie_mtime_ms: selfieMtimeMs,
+      auto_generation_paused: this.autoGenerationPaused.has(job.uuid)
     };
   };
 

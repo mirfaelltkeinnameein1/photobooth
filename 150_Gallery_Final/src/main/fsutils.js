@@ -19,7 +19,8 @@ async function fileExists(filePath) {
 async function readJsonSafe(filePath, fallback = null) {
   try {
     const raw = await fs.promises.readFile(filePath, "utf8");
-    return JSON.parse(raw);
+    // Editors like Notepad/PowerShell may prepend a UTF-8 BOM, which JSON.parse rejects.
+    return JSON.parse(raw.replace(/^﻿/, ""));
   } catch {
     return fallback;
   }

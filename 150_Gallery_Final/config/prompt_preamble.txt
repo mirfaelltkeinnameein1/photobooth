@@ -1,1 +1,1 @@
-Maintain the 1:1 aspect ratio.
+Keep the exact aspect ratio, framing and composition of Image A (the slot template).

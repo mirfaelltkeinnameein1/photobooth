@@ -4,7 +4,7 @@ const { PATHS } = require("./paths");
 const { ensureDir, fileExists, nowIso } = require("./fsutils");
 const { saveJob } = require("./jobStore");
 const { probeImageResolution } = require("./media");
-const { generateWithRetry } = require("./gemini");
+const { generateWithRetry, closestAspectRatio } = require("./gemini");
 
 // Queue generation engine (slot assignment, model calls, auto-accept/export hooks).
 function installStateManagerQueueGenerationMethods(StateManager) {
@@ -88,6 +88,20 @@ function installStateManagerQueueGenerationMethods(StateManager) {
           this.emitState();
         }
 
+        // A job still missing a candidate would be picked again by processQueue right away,
+        // looping API calls forever (bad key, no network, missing template). Park it until
+        // the operator retries via Send To API / Regenerate.
+        if (this.jobNeedsInitialGeneration(updated)) {
+          this.autoGenerationPaused.add(uuid);
+          await this.logger.warn("queue", "Auto generation paused for job after failed attempt. Use Send To API or Regenerate to retry.", {
+            job_uuid: uuid,
+            error: updated.error?.message || null
+          });
+          this.emitState();
+        } else {
+          this.autoGenerationPaused.delete(uuid);
+        }
+
         shouldAutoExport = !!(
           this.config?.automation?.auto_export_enabled &&
           updated?.accepted?.group1 &&
@@ -142,6 +156,23 @@ function installStateManagerQueueGenerationMethods(StateManager) {
     await ensureDir(outDir);
     const version = (job.candidates[group]?.length || 0) + 1;
 
+    // Templates may have any size; ask Gemini for the template's shape instead of a fixed 1:1.
+    let aspectRatio = null;
+    if (this.mediaTools.ffprobe) {
+      try {
+        const templateRes = await probeImageResolution(templatePath);
+        aspectRatio = closestAspectRatio(templateRes.width, templateRes.height);
+      } catch (err) {
+        await this.logger.warn("gemini", "Could not probe template resolution; model picks aspect ratio", {
+          job_uuid: uuid,
+          group,
+          slot,
+          path: templatePath,
+          error: err.message
+        });
+      }
+    }
+
     try {
       const result = await generateWithRetry({
         apiKey: this.apiKey,
@@ -152,6 +183,7 @@ function installStateManagerQueueGenerationMethods(StateManager) {
         promptText,
         templatePath,
         selfiePath: job.selfie_path,
+        aspectRatio,
         outputDir: outDir,
         outputPrefix: `${group}_${slot}_v${version}`,
         logger: this.logger,

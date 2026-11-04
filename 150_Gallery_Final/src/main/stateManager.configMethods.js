@@ -103,6 +103,8 @@ function installStateManagerConfigMethods(StateManager) {
         this.apiKey = nextKey;
         await this.logger.warn("security", "Credential Manager unavailable; API key set for current session only.");
       }
+      // A bad key is the most common reason jobs got parked; give them another go.
+      this.autoGenerationPaused.clear();
     }
 
     if (!MODELS.includes(this.config.selected_model)) this.config.selected_model = MODELS[0];

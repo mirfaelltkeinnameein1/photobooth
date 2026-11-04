@@ -71,7 +71,7 @@
       const candidate = latestCandidate(job, group);
       const candidatePath = candidate?.path || "";
       const img = candidate
-        ? `<div class="aspect-square w-full overflow-hidden rounded border border-slate-700"><img src="${candidateUrl(candidate)}" class="h-full w-full object-cover" /></div>`
+        ? `<div class="aspect-square w-full overflow-hidden rounded border border-slate-700 bg-slate-900"><img src="${candidateUrl(candidate)}" class="h-full w-full object-contain" /></div>`
         : `<div class="aspect-square w-full rounded border border-slate-700 bg-slate-900 p-2 text-xs text-slate-500">No candidate yet</div>`;
 
       return `<div class="rounded border border-slate-700 p-2">
@@ -90,7 +90,8 @@
       const canExport = !!(job.accepted?.group1 && job.accepted?.group2);
       const exportStatus = job.export?.status || "NOT_READY";
       const autoApiEnabled = state.snapshot?.config?.automation?.auto_api_enabled !== false;
-      const showSendToApi = !autoApiEnabled && jobNeedsApiGeneration(job);
+      // Also offer a manual retry when auto mode parked this job after a failed attempt.
+      const showSendToApi = (!autoApiEnabled || !!job.auto_generation_paused) && jobNeedsApiGeneration(job);
       const err = job.error ? `<div class="rounded border border-red-500/40 bg-red-900/20 p-2 text-xs text-red-200">${job.error.message || ""}</div>` : "";
       return `
         <div class="mb-2 text-xs text-slate-400">UUID: ${job.uuid}</div>
@@ -113,7 +114,7 @@
             <div class="mb-2 text-sm font-semibold">Job Actions</div>
             ${showSendToApi ? `<div class="mb-2"><button class="btn-ghost job-send-api-btn w-full" data-uuid="${job.uuid}">Send To API</button></div>` : ""}
             <div class="mb-2">
-              <button class="btn-primary job-export-btn w-full ${canExport ? "" : "opacity-50 cursor-not-allowed"}" data-uuid="${job.uuid}" ${canExport ? "" : "disabled"}>Export MP4s</button>
+              <button class="btn-primary job-export-btn w-full ${canExport ? "" : "opacity-50 cursor-not-allowed"}" data-uuid="${job.uuid}" ${canExport ? "" : "disabled"}>Export Images</button>
             </div>
             <button class="btn-primary job-delete-btn w-full" data-uuid="${job.uuid}">Delete Job</button>
           </div>

@@ -1,4 +1,4 @@
-﻿{
+{
     "incoming_selfies_dir":  "runtime/incoming_selfies",
     "outgoing_dir":  "runtime/outgoing_for_other_app",
     "selected_model":  "gemini-3-pro-image-preview",

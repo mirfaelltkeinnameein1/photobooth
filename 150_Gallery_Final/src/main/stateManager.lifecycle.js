@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { SLOT_IDS, MODELS } = require("./constants");
 const { PATHS, toAbsoluteMaybeRelative } = require("./paths");
-const { ensureDir, fileExists, readJsonSafe, atomicWriteJson, atomicWriteFile, copyFileIfMissing, nowIso } = require("./fsutils");
+const { ensureDir, fileExists, readJsonSafe, atomicWriteJson, atomicWriteFile, copyFileIfMissing, readTextSafe, nowIso } = require("./fsutils");
 const { loadAllJobs } = require("./jobStore");
 const { loadLayout } = require("./layoutStore");
 const { getApiKey } = require("./secureStore");
@@ -22,7 +22,7 @@ function installStateManagerLifecycleMethods(StateManager) {
 
     this.mediaTools = await checkMediaTooling();
     if (!this.mediaTools.ffmpeg || !this.mediaTools.ffprobe) {
-      await this.logger.warn("startup", "ffmpeg/ffprobe missing from PATH. Image conversion/probing and MP4 export may fail.", {
+      await this.logger.warn("startup", "ffmpeg/ffprobe missing from PATH. Image conversion/probing and image export may fail.", {
         ffmpeg: this.mediaTools.ffmpeg,
         ffprobe: this.mediaTools.ffprobe
       });
@@ -139,6 +139,15 @@ function installStateManagerLifecycleMethods(StateManager) {
 
     if (await fileExists(bundledPreamblePath)) {
       await copyFileIfMissing(bundledPreamblePath, targetPreamblePath);
+
+      // Old shipped preamble forced square output; swap it out unless the operator edited it.
+      const legacySquarePreamble = "Maintain the 1:1 aspect ratio.";
+      const current = (await readTextSafe(targetPreamblePath, "")).trim();
+      const bundled = (await readTextSafe(bundledPreamblePath, "")).trim();
+      if (current === legacySquarePreamble && bundled && bundled !== current) {
+        await atomicWriteFile(targetPreamblePath, bundled);
+        await this.logger.info("config", "Replaced legacy 1:1 prompt preamble with bundled version");
+      }
     }
 
     await copyFileIfMissing(PATHS.BUNDLED_LAYOUT_GALLERY1, PATHS.LAYOUT_GALLERY1);
