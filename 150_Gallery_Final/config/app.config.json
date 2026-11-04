@@ -1,0 +1,128 @@
+﻿{
+    "incoming_selfies_dir":  "runtime/incoming_selfies",
+    "outgoing_dir":  "runtime/outgoing_for_other_app",
+    "selected_model":  "gemini-3-pro-image-preview",
+    "model_fallback_enabled":  true,
+    "automation":  {
+                       "auto_api_enabled":  true,
+                       "auto_accept_enabled":  false,
+                       "auto_export_enabled":  false
+                   },
+    "auto_revert_seconds":  15,
+    "auto_revert_deadlines":  {
+
+                              },
+    "group_cycle_index":  0,
+    "slot_registry":  {
+                          "slot01":  {
+                                         "slot_id":  "slot01",
+                                         "active":  false,
+                                         "display_gallery":  "gallery1",
+                                         "generation_group":  "group1",
+                                         "order_index":  1
+                                     },
+                          "slot02":  {
+                                         "slot_id":  "slot02",
+                                         "active":  true,
+                                         "display_gallery":  "gallery1",
+                                         "generation_group":  "group1",
+                                         "order_index":  2
+                                     },
+                          "slot03":  {
+                                         "slot_id":  "slot03",
+                                         "active":  true,
+                                         "display_gallery":  "gallery2",
+                                         "generation_group":  "group1",
+                                         "order_index":  3
+                                     },
+                          "slot04":  {
+                                         "slot_id":  "slot04",
+                                         "active":  false,
+                                         "display_gallery":  "gallery1",
+                                         "generation_group":  "group2",
+                                         "order_index":  4
+                                     },
+                          "slot05":  {
+                                         "slot_id":  "slot05",
+                                         "active":  true,
+                                         "display_gallery":  "gallery1",
+                                         "generation_group":  "group2",
+                                         "order_index":  5
+                                     },
+                          "slot06":  {
+                                         "slot_id":  "slot06",
+                                         "active":  false,
+                                         "display_gallery":  "gallery1",
+                                         "generation_group":  "group2",
+                                         "order_index":  6
+                                     },
+                          "slot07":  {
+                                         "slot_id":  "slot07",
+                                         "active":  true,
+                                         "display_gallery":  "gallery2",
+                                         "generation_group":  "group2",
+                                         "order_index":  7
+                                     },
+                          "slot08":  {
+                                         "slot_id":  "slot08",
+                                         "active":  false,
+                                         "display_gallery":  "gallery2",
+                                         "generation_group":  "group2",
+                                         "order_index":  8
+                                     },
+                          "slot09":  {
+                                         "slot_id":  "slot09",
+                                         "active":  true,
+                                         "display_gallery":  "gallery1",
+                                         "generation_group":  "group2",
+                                         "order_index":  9
+                                     },
+                          "slot10":  {
+                                         "slot_id":  "slot10",
+                                         "active":  false,
+                                         "display_gallery":  "gallery2",
+                                         "generation_group":  "group2",
+                                         "order_index":  10
+                                     },
+                          "slot11":  {
+                                         "slot_id":  "slot11",
+                                         "active":  true,
+                                         "display_gallery":  "gallery2",
+                                         "generation_group":  "group1",
+                                         "order_index":  11
+                                     },
+                          "slot12":  {
+                                         "slot_id":  "slot12",
+                                         "active":  false,
+                                         "display_gallery":  "gallery2",
+                                         "generation_group":  "group2",
+                                         "order_index":  12
+                                     }
+                      },
+    "gallery_backgrounds":  {
+                                "gallery1":  {
+                                                 "type":  "color",
+                                                 "color":  "#000000",
+                                                 "image_rel":  "config/gallery_backgrounds/gallery1_background.png"
+                                             },
+                                "gallery2":  {
+                                                 "type":  "color",
+                                                 "color":  "#000000",
+                                                 "image_rel":  ""
+                                             }
+                            },
+    "window_bounds":  {
+                          "operator":  {
+                                           "width":  1600,
+                                           "height":  980
+                                       },
+                          "gallery1":  {
+                                           "width":  1280,
+                                           "height":  720
+                                       },
+                          "gallery2":  {
+                                           "width":  1280,
+                                           "height":  720
+                                       }
+                      }
+}

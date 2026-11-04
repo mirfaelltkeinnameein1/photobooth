@@ -1,0 +1,75 @@
+{
+  "name": "gallery-composer",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Gallery Composer Team",
+  "description": "Local-first kiosk-grade live event gallery composer",
+  "main": "src/main/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "start": "npm run build:css && electron .",
+    "build:css": "tailwindcss -i src/renderer/styles/tailwind.css -o public/styles.tailwind.generated.css",
+    "watch:css": "tailwindcss -i src/renderer/styles/tailwind.css -o public/styles.tailwind.generated.css --watch",
+    "prepack:win": "node scripts/bundle-ffmpeg.js && npm run build:css",
+    "dist:win": "npm run prepack:win && node scripts/package-win-portable.js",
+    "dist:win:builder": "npm run prepack:win && electron-builder --win nsis portable --x64"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "keytar": "^7.9.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "electron": "^34.2.0",
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17"
+  },
+  "build": {
+    "appId": "com.local.gallerycomposer",
+    "productName": "Gallery Composer",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "npmRebuild": false,
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "edit_mode": false,
+  "slots": [
+    {
+      "slot": "slot01",
+      "x": 312.667,
+      "y": 186.001,
+      "width": 566.666,
+      "height": 566.666,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot02",
+      "x": 1164.67,
+      "y": 146,
+      "width": 490,
+      "height": 490,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot03",
+      "x": 1692,
+      "y": 143.333,
+      "width": 490,
+      "height": 490,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot04",
+      "x": 140.667,
+      "y": 852,
+      "width": 490,
+      "height": 490,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot05",
+      "x": 902.667,
+      "y": 825.333,
+      "width": 490,
+      "height": 490,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot06",
+      "x": 1673.33,
+      "y": 766,
+      "width": 490,
+      "height": 490,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot09",
+      "x": 416,
+      "y": 257.333,
+      "width": 564.667,
+      "height": 564.667,
+      "z": 1,
+      "rotation": 0
+    },
+    {
+      "slot": "slot07",
+      "x": 100,
+      "y": 100,
+      "width": 300,
+      "height": 300,
+      "z": 1,
+      "rotation": 0
+    }
+  ]
+}

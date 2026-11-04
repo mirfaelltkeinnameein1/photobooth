@@ -1,0 +1,2 @@
+Edit the image of the guy at the mall so that he is replaced by the person from the selfie. Make sure the lighting, style and pose of the original photo at the mall are maintained but do replace the person including their gender and skin color if necessary with the one from the selfie. The clothing should also be appropriate to the vintage photo at the mall but also match the gender of the person from the selfie. 
+
